@@ -5,9 +5,8 @@ using OxyPlot.Series;
 using OxyPlot.SkiaSharp;
 
 //Creating path variables
-string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-string timePath = Path.Combine(baseDirectory, "time.txt");
-string intPath = Path.Combine(baseDirectory, "intensity.txt");
+string timePath = "time.txt";
+string intPath = "intensity.txt";
 
 //Creating collection variables and assigning values to them
 List<int> times = [];
@@ -17,9 +16,6 @@ times = GetTimesData(timePath);
 double timesAverage = CalculateAverage(times);
 intensity = getIntensityData(intPath);
 mappedIntensity = MapIntensity(intensity);
-
-Console.WriteLine(timesAverage);
-
 
 //Converting each key value pair to DataPoint class in order to draw a plot
 List<DataPoint> points = [];

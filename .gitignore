@@ -361,3 +361,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Website files created by the application
+*.html
+*.css
+chart.png
+
+# Source files already added to the repo
+intensity.txt
+time.txt

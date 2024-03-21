@@ -12,4 +12,13 @@
     <PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="intensity.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="time.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
