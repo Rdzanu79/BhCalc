@@ -10,4 +10,4 @@ Application is still a WIP. Some features I am yet to add:
 - Style the website and add all the descriptions
 - Make the documentation
 
-[1]: <https://en.wikipedia.org/wiki/Rush_hour>
+[1]: <https://en.wikipedia.org/wiki/Internet_rush_hour>
