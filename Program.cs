@@ -1,5 +1,4 @@
 ﻿using OxyPlot;
-using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.SkiaSharp;
@@ -60,8 +59,11 @@ plotModel.Axes.Add(new LinearAxis
 //Creating a variable of PngExporter class, which is used to export plot into in our case .png file
 var exporter = new PngExporter { Width = 800, Height = 600 };
 
-//Creating .png file from our plot
-using (var stream = File.Create("chart.png"))
+//Creating a directory to which files will be saved 
+Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}\website");
+
+//Creating .png file from our plot and exporting it
+using (var stream = File.Create(@"website\chart.png"))
 {
     exporter.Export(plotModel, stream);
 }
