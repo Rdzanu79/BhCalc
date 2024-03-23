@@ -366,6 +366,7 @@ FodyWeavers.xsd
 *.html
 *.css
 chart.png
+/website/
 
 # Source files already added to the repo
 intensity.txt

@@ -12,11 +12,11 @@ List<int> times = [];
 Dictionary<int, double> intensity = [];
 Dictionary<int, double> mappedIntensity = [];
 times = GetTimesData(timePath);
-double timesAverage = CalculateAverage(times);
+double timesAverage = times.Average();
 intensity = getIntensityData(intPath);
 mappedIntensity = MapIntensity(intensity);
 
-//Converting each key value pair to DataPoint class in order to draw a plot
+//Converting each key value pair to DataPoint class
 List<DataPoint> points = [];
 foreach (var item in mappedIntensity)
 {
@@ -24,9 +24,13 @@ foreach (var item in mappedIntensity)
 }
 
 //Creating a new plot
-var plotModel = new PlotModel { Title = "Godzina największego ruchu" };
+var plotModel = new PlotModel 
+{ 
+    Title = "Godzina największego ruchu",
+    TitleColor = OxyColors.White,
+};
 
-//Drawing a graph with the points we previously calculated. Configuring the look of the graph
+//Drawing a graph with the calculated points. Configuring the look of the graph
 var intensitySeries = new LineSeries
 {
     Title = "Godzina największego ruchu",
@@ -34,41 +38,48 @@ var intensitySeries = new LineSeries
     MarkerFill = OxyColors.Black,
     Background = OxyColors.White,
     ItemsSource = points,
-    Color = OxyColors.Blue
+    Color = OxyColors.SteelBlue,
 };
 plotModel.Series.Add(intensitySeries);
 
-//Modifying X axis to show hours in the format 12:00, instead of minutes
+//Modifying X axis to show hours in the format 24:00, instead of minutes
 plotModel.Axes.Add(new LinearAxis
 {
     Position = AxisPosition.Bottom,
     Title = "Godzina",
     LabelFormatter = label => TimeSpan.FromMinutes(label).ToString(@"hh\:mm"),
     Minimum = 0,
-    Maximum = 24 * 60
+    Maximum = 24 * 60,
+    TitleColor = OxyColors.White,
+    TextColor = OxyColors.White,
+    TicklineColor = OxyColors.White,
+    
 });
 
-//Modifying Y axis to show the data that we want
+//Modifying Y axis to show the needed data
 plotModel.Axes.Add(new LinearAxis
 {
     Position = AxisPosition.Left,
     Title = "Intensywność",
     Minimum = 0,
+    TitleColor = OxyColors.White,
+    TextColor = OxyColors.White,
+    TicklineColor = OxyColors.White,
 });
 
-//Creating a variable of PngExporter class, which is used to export plot into in our case .png file
+//Creating a variable of PngExporter class, which is used to export plot into .png file
 var exporter = new PngExporter { Width = 800, Height = 600 };
 
 //Creating a directory to which files will be saved 
 Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}\website");
 
-//Creating .png file from our plot and exporting it
+//Creating .png file from the plot and exporting it
 using (var stream = File.Create(@"website\chart.png"))
 {
     exporter.Export(plotModel, stream);
 }
 
-//Functions to read data from the czas.txt file and then convert it to a List<>
+//Function to read data from the czas.txt file and then convert it to a List<>
 List<int> GetTimesData(string path)
 {
     try
@@ -106,7 +117,7 @@ Dictionary<int, double> getIntensityData(string path)
                 intensity[minutes] = calls;
             }
         }
-        Instructions();
+       Instructions();
     }
     catch (Exception e)
     {
@@ -115,13 +126,7 @@ Dictionary<int, double> getIntensityData(string path)
     return intensity;
 }
 
-//Function to calcualte an average of the given List<>
-double CalculateAverage(List<int> times)
-{
-   return times.Average();
-}
-
-//Function to convert the given Dictionary<><> to another Dictionary<><> with the modified values. In this example we modify the Value for each Key.
+//Function to convert the given Dictionary<><> to another Dictionary<><> with the modified values
 Dictionary<int, double> MapIntensity(Dictionary<int, double> intensity)
 {
     Dictionary<int, double> mappedIntensity = [];
