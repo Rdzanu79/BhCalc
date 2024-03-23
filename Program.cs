@@ -104,6 +104,7 @@ Dictionary<int, double> getIntensityData(string path)
                 intensity[minutes] = calls;
             }
         }
+        Instructions();
     }
     catch (Exception e)
     {
@@ -127,4 +128,25 @@ Dictionary<int, double> MapIntensity(Dictionary<int, double> intensity)
         mappedIntensity[item.Key] = (item.Value / timesAverage);
     }
     return mappedIntensity; 
+}
+
+//Function displaying loading bar and further instructions
+void Instructions()
+{
+    Console.Write("|");
+    for (int i = 0; i < 30; i++)
+    {
+        Console.Write("#");
+        Thread.Sleep(80);
+    }
+    Console.Write("|");
+    Thread.Sleep(300);
+    Console.Clear();
+    Console.WriteLine(">Obliczenia udane");
+    Thread.Sleep(1000);
+    Console.WriteLine(">Wykres wygenerowany");
+    Thread.Sleep(1000);
+    Console.WriteLine(">Strona utworzona");
+    Thread.Sleep(1000);
+    Console.WriteLine(">Aby przejść do wyników wejdź do folderu website i otwórz plik index.html");
 }
