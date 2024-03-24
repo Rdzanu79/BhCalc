@@ -12,71 +12,78 @@ List<int> times = [];
 Dictionary<int, double> intensity = [];
 Dictionary<int, double> mappedIntensity = [];
 times = GetTimesData(timePath);
-double timesAverage = times.Average();
 intensity = getIntensityData(intPath);
-mappedIntensity = MapIntensity(intensity);
 
-//Converting each key value pair to DataPoint class
-List<DataPoint> points = [];
-foreach (var item in mappedIntensity)
+//Checking if the List and Dictionary aren't empty
+if (times.Count != 0 && intensity.Count != 0)
 {
-    points.Add(new DataPoint((item.Key), item.Value));
-}
+    //Modifying the data
+    double timesAverage = times.Average();
+    mappedIntensity = MapIntensity(intensity, timesAverage);
 
-//Creating a new plot
-var plotModel = new PlotModel 
-{ 
-    Title = "Godzina największego ruchu",
-    TitleColor = OxyColors.White,
-};
+    //Converting each key value pair to DataPoint class
+    List<DataPoint> points = [];
+    foreach (var item in mappedIntensity)
+    {
+        points.Add(new DataPoint((item.Key), item.Value));
+    }
 
-//Drawing a graph with the calculated points. Configuring the look of the graph
-var intensitySeries = new LineSeries
-{
-    Title = "Godzina największego ruchu",
-    MarkerStroke = OxyColors.White,
-    MarkerFill = OxyColors.Black,
-    Background = OxyColors.White,
-    ItemsSource = points,
-    Color = OxyColors.SteelBlue,
-};
-plotModel.Series.Add(intensitySeries);
+    //Creating a new plot
+    var plotModel = new PlotModel
+    {
+        Title = "Godzina największego ruchu",
+        TitleColor = OxyColors.White,
+    };
 
-//Modifying X axis to show hours in the format 24:00, instead of minutes
-plotModel.Axes.Add(new LinearAxis
-{
-    Position = AxisPosition.Bottom,
-    Title = "Godzina",
-    LabelFormatter = label => TimeSpan.FromMinutes(label).ToString(@"hh\:mm"),
-    Minimum = 0,
-    Maximum = 24 * 60,
-    TitleColor = OxyColors.White,
-    TextColor = OxyColors.White,
-    TicklineColor = OxyColors.White,
-    
-});
+    //Drawing a graph with the calculated points. Configuring the look of the graph
+    var intensitySeries = new LineSeries
+    {
+        Title = "Godzina największego ruchu",
+        MarkerStroke = OxyColors.White,
+        MarkerFill = OxyColors.Black,
+        Background = OxyColors.White,
+        ItemsSource = points,
+        Color = OxyColors.SteelBlue,
+    };
+    plotModel.Series.Add(intensitySeries);
 
-//Modifying Y axis to show the needed data
-plotModel.Axes.Add(new LinearAxis
-{
-    Position = AxisPosition.Left,
-    Title = "Intensywność",
-    Minimum = 0,
-    TitleColor = OxyColors.White,
-    TextColor = OxyColors.White,
-    TicklineColor = OxyColors.White,
-});
+    //Modifying X axis to show hours in the format 24:00, instead of minutes
+    plotModel.Axes.Add(new LinearAxis
+    {
+        Position = AxisPosition.Bottom,
+        Title = "Godzina",
+        LabelFormatter = label => TimeSpan.FromMinutes(label).ToString(@"hh\:mm"),
+        Minimum = 0,
+        Maximum = 24 * 60,
+        TitleColor = OxyColors.White,
+        TextColor = OxyColors.White,
+        TicklineColor = OxyColors.White,
 
-//Creating a variable of PngExporter class, which is used to export plot into .png file
-var exporter = new PngExporter { Width = 800, Height = 600 };
+    });
 
-//Creating a directory to which files will be saved 
-Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}\website");
+    //Modifying Y axis to show the needed data
+    plotModel.Axes.Add(new LinearAxis
+    {
+        Position = AxisPosition.Left,
+        Title = "Intensywność",
+        Minimum = 0,
+        TitleColor = OxyColors.White,
+        TextColor = OxyColors.White,
+        TicklineColor = OxyColors.White,
+    });
 
-//Creating .png file from the plot and exporting it
-using (var stream = File.Create(@"website\chart.png"))
-{
-    exporter.Export(plotModel, stream);
+    //Creating a variable of PngExporter class, which is used to export plot into .png file
+    var exporter = new PngExporter { Width = 800, Height = 600 };
+
+    //Creating a directory to which files will be saved 
+    Directory.CreateDirectory($@"{Directory.GetCurrentDirectory()}\website");
+
+    //Creating .png file from the plot and exporting it
+    using (var stream = File.Create(@"website\chart.png"))
+    {
+        exporter.Export(plotModel, stream);
+    }
+    Instructions();
 }
 
 //Function to read data from the czas.txt file and then convert it to a List<>
@@ -117,7 +124,6 @@ Dictionary<int, double> getIntensityData(string path)
                 intensity[minutes] = calls;
             }
         }
-       Instructions();
     }
     catch (Exception e)
     {
@@ -127,7 +133,7 @@ Dictionary<int, double> getIntensityData(string path)
 }
 
 //Function to convert the given Dictionary<><> to another Dictionary<><> with the modified values
-Dictionary<int, double> MapIntensity(Dictionary<int, double> intensity)
+Dictionary<int, double> MapIntensity(Dictionary<int, double> intensity, double timesAverage)
 {
     Dictionary<int, double> mappedIntensity = [];
     foreach (var item in intensity)
