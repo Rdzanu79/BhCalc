@@ -1,4 +1,5 @@
 ﻿using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.SkiaSharp;
@@ -27,6 +28,9 @@ if (times.Count != 0 && intensity.Count != 0)
     {
         points.Add(new DataPoint((item.Key), item.Value));
     }
+    //Creating a list of following max Y value DataPoints
+    List<DataPoint> maxPoints = [];
+    maxPoints = GetMaximumPoints(points);
 
     //Creating a new plot
     var plotModel = new PlotModel
@@ -71,6 +75,48 @@ if (times.Count != 0 && intensity.Count != 0)
         TextColor = OxyColors.White,
         TicklineColor = OxyColors.White,
     });
+
+    //Vertical line at the highest Y value DataPoint from the left
+    var maxLineAnnotationLeft = new LineAnnotation
+    {
+        Type = LineAnnotationType.Vertical,
+        X = maxPoints[0].X,
+        Y = plotModel.Axes[0].Minimum,
+        Color = OxyColors.Red,
+        StrokeThickness = 2
+    };
+    plotModel.Annotations.Add(maxLineAnnotationLeft);
+
+    //Vertical line at the next highest Y value DataPoint
+    var maxLineAnnotationRight = new LineAnnotation
+    {
+        Type = LineAnnotationType.Vertical,
+        X = maxPoints[1].X,
+        Y = plotModel.Axes[0].Minimum,
+        Color = OxyColors.Red,
+        StrokeThickness = 2
+    };
+    plotModel.Annotations.Add(maxLineAnnotationRight);
+
+    //Text annotation for the left line
+    var leftLineTextAnnotation = new TextAnnotation
+    {
+        Text = $"{TimeSpan.FromMinutes(maxPoints[0].X):hh\\:mm}, {maxPoints[0].Y}",
+        TextPosition = new DataPoint(maxPoints[0].X - 380, maxPoints[0].Y - 0.00000075),
+        TextHorizontalAlignment = HorizontalAlignment.Left,
+        TextVerticalAlignment = VerticalAlignment.Top
+    };
+    plotModel.Annotations.Add(leftLineTextAnnotation);
+
+    //Text annotation for the right line
+    var rightLineTextAnnotation = new TextAnnotation
+    {
+        Text = $"{TimeSpan.FromMinutes(maxPoints[1].X):hh\\:mm}, {maxPoints[1].Y}",
+        TextPosition = new DataPoint(maxPoints[1].X + 30, maxPoints[0].Y - 0.00000075),
+        TextHorizontalAlignment = HorizontalAlignment.Left,
+        TextVerticalAlignment = VerticalAlignment.Top
+    };
+    plotModel.Annotations.Add(rightLineTextAnnotation);
 
     //Creating a variable of PngExporter class, which is used to export plot into .png file
     var exporter = new PngExporter { Width = 800, Height = 600 };
@@ -140,7 +186,46 @@ Dictionary<int, double> MapIntensity(Dictionary<int, double> intensity, double t
     {
         mappedIntensity[item.Key] = (item.Value / timesAverage);
     }
-    return mappedIntensity; 
+    return mappedIntensity;
+}
+
+//Function to get the interval between two following highest Y value DataPoints
+List<DataPoint> GetMaximumPoints(List<DataPoint> points)
+{
+    List<DataPoint> maxPoints = [];
+    double biggestYLeft = 0;
+    double xLeft = 0;
+    double nextBiggestYLeft = 0;
+    double nextXLeft = 0;
+
+    points.Sort((a, b) => a.X.CompareTo(b.X));
+
+    foreach (var point in points)
+    {
+        if (point.Equals(points[0]))
+        {
+            biggestYLeft = point.Y;
+            xLeft = point.X;
+        }
+        else
+        {
+            if (point.Y > biggestYLeft)
+            {
+                nextBiggestYLeft = biggestYLeft;
+                nextXLeft = xLeft;
+                biggestYLeft = point.Y;
+                xLeft = point.X;
+            }
+            else if (point.Y > nextBiggestYLeft)
+            {
+                nextBiggestYLeft = point.Y;
+                nextXLeft = point.X;
+            }
+        }
+    }
+    maxPoints.Add(new DataPoint(xLeft, biggestYLeft));
+    maxPoints.Add(new DataPoint(nextXLeft, nextBiggestYLeft));
+    return maxPoints;
 }
 
 //Function displaying loading bar and further instructions
