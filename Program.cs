@@ -69,7 +69,7 @@ if (times.Count != 0 && intensity.Count != 0)
     plotModel.Axes.Add(new LinearAxis
     {
         Position = AxisPosition.Left,
-        Title = "Intensywność",
+        Title = "Natężenie ruchu",
         Minimum = 0,
         TitleColor = OxyColors.White,
         TextColor = OxyColors.White,
@@ -98,25 +98,19 @@ if (times.Count != 0 && intensity.Count != 0)
     };
     plotModel.Annotations.Add(maxLineAnnotationRight);
 
-    //Text annotation for the left line
+    //Text annotation for the interval
+    string intervalAverage = GetIntervalAverage(points, maxPoints).ToString("F3");
+    string text = $"Przedział godzin: {TimeSpan.FromMinutes(maxPoints[0].X):hh\\:mm} - {TimeSpan.FromMinutes(maxPoints[1].X):hh\\:mm}\nŚrednie natężenie ruchu: {intervalAverage}";
     var leftLineTextAnnotation = new TextAnnotation
     {
-        Text = $"{TimeSpan.FromMinutes(maxPoints[0].X):hh\\:mm}, {maxPoints[0].Y}",
-        TextPosition = new DataPoint(maxPoints[0].X - 380, maxPoints[0].Y - 0.00000075),
+        Text = text,
+        FontSize = 15,
+        TextColor = OxyColors.DarkRed,
+        TextPosition = new DataPoint(40, 0.335),
         TextHorizontalAlignment = HorizontalAlignment.Left,
         TextVerticalAlignment = VerticalAlignment.Top
     };
     plotModel.Annotations.Add(leftLineTextAnnotation);
-
-    //Text annotation for the right line
-    var rightLineTextAnnotation = new TextAnnotation
-    {
-        Text = $"{TimeSpan.FromMinutes(maxPoints[1].X):hh\\:mm}, {maxPoints[1].Y}",
-        TextPosition = new DataPoint(maxPoints[1].X + 30, maxPoints[0].Y - 0.00000075),
-        TextHorizontalAlignment = HorizontalAlignment.Left,
-        TextVerticalAlignment = VerticalAlignment.Top
-    };
-    plotModel.Annotations.Add(rightLineTextAnnotation);
 
     //Creating a variable of PngExporter class, which is used to export plot into .png file
     var exporter = new PngExporter { Width = 800, Height = 600 };
@@ -184,7 +178,7 @@ Dictionary<int, double> MapIntensity(Dictionary<int, double> intensity, double t
     Dictionary<int, double> mappedIntensity = [];
     foreach (var item in intensity)
     {
-        mappedIntensity[item.Key] = (item.Value / timesAverage);
+        mappedIntensity[item.Key] = (item.Value * timesAverage);
     }
     return mappedIntensity;
 }
@@ -226,6 +220,21 @@ List<DataPoint> GetMaximumPoints(List<DataPoint> points)
     maxPoints.Add(new DataPoint(xLeft, biggestYLeft));
     maxPoints.Add(new DataPoint(nextXLeft, nextBiggestYLeft));
     return maxPoints;
+}
+
+//Function to calculate an average inside the interval
+double GetIntervalAverage(List<DataPoint> points, List<DataPoint> maxPoints)
+{
+    int startIndex = points.FindIndex(p => p.X == maxPoints[0].X);
+    int endIndex = points.FindIndex(p => p.X == maxPoints[1].X);
+    int counter = 0;
+    double average = 0;
+    for (int i = startIndex; i <= endIndex; i++)
+    {
+        average += points[i].Y;
+        counter++;
+    }
+    return average / counter;
 }
 
 //Function displaying loading bar and further instructions
