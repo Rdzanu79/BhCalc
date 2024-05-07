@@ -369,5 +369,5 @@ chart.png
 /website/
 
 # Source files already added to the repo
-intensity.txt
-time.txt
+#intensity.txt
+#time.txt
