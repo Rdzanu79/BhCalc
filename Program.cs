@@ -3,10 +3,11 @@ using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.SkiaSharp;
+using RushHourCalculator;
 
 //Creating path variables
-string timePath = "time.txt";
-string intPath = "intensity.txt";
+string timePath = @"src\time.txt";
+string intPath = @"src\intensity.txt";
 
 //Creating collection variables and assigning values to them
 List<int> times = [];
@@ -123,6 +124,8 @@ if (times.Count != 0 && intensity.Count != 0)
     {
         exporter.Export(plotModel, stream);
     }
+    //Generating website files
+    GenerateWebsite.GenerateHTML(@"website\index.html", @"website\style.css");
     Instructions();
 }
 
