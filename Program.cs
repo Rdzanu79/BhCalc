@@ -7,7 +7,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows;
 
-namespace RhCalcApp
+namespace BhCalcApp
 {
     internal class Program
     {
@@ -109,7 +109,7 @@ namespace RhCalcApp
 
                 //Text annotation for the interval
                 string intervalAverage = GetIntervalAverage(points, maxPoints).ToString("F3");
-                string text = $"Przedział godzin: {TimeSpan.FromMinutes(maxPoints[0].X):hh\\:mm} - {TimeSpan.FromMinutes(maxPoints[1].X):hh\\:mm}\nŚrednie natężenie ruchu: {intervalAverage}";
+                string text = $"Przedział godzin: {TimeSpan.FromMinutes(maxPoints[0].X):hh\\:mm} - {TimeSpan.FromMinutes(maxPoints[1].X):hh\\:mm}\nŚrednie natężenie ruchu: {intervalAverage} erlanga";
                 var leftLineTextAnnotation = new TextAnnotation
                 {
                     Text = text,
