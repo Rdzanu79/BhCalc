@@ -253,7 +253,7 @@ namespace BhCalcApp
             //Function to open generated website
             void OpenWebsite(string path)
             {
-                if (System.IO.File.Exists(path))
+                if (File.Exists(path))
                 {
                     Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
                 }

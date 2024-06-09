@@ -20,10 +20,10 @@
 		<None Update="src\time.txt">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="src\theory.txt">
+		<None Update="src\theory.pdf">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="src\help.txt">
+		<None Update="src\help.pdf">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
